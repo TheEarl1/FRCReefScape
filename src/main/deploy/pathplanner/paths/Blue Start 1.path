@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.102715163934427,
+        "y": 6.614
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.365687460639496,
+        "y": 5.984988134413983
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.313550204918033,
+        "y": 5.113
+      },
+      "prevControl": {
+        "x": 6.204461658890556,
+        "y": 5.8770104209581
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Blue Reef I"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "BlueIL4Score",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Blue Starts",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.16761337957782
+  },
+  "useDefaultConstraints": true
+}

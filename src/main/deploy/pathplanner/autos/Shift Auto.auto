@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6inch Right Shift"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6inch Right Return"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6inch Left Shift"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of Copy of 6inch Right Shift"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -4,10 +4,43 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.Drive.DriveToPose;
+import frc.robot.commands.Drive.SwerveDrive;
+import frc.robot.commands.Drive.TargetDrive;
+import frc.robot.commands.Drive.TurnToTarget;
+import frc.robot.commands.Lights.BlinkLights;
+import frc.robot.commands.Lights.DisableLights;
+import frc.robot.commands.Lights.EnableLights;
+import frc.robot.commands.Lights.MakeCool;
+import frc.robot.commands.Lights.MakeRainbow;
+import frc.robot.commands.Lights.MakeWarm;
+import frc.robot.commands.Lights.MoveLightsBlue;
+import frc.robot.commands.Lights.MoveLightsColor;
+import frc.robot.commands.Lights.MoveLightsGreen;
+import frc.robot.commands.Lights.MoveLightsMagenta;
+import frc.robot.commands.Lights.MoveLightsPurple;
+import frc.robot.commands.Lights.MoveLightsYellow;
+import frc.robot.commands.Sensors.ResetAllSensors;
+import frc.robot.commands.Sensors.ToggleSensorsOnOff;
+import frc.robot.commands.Vision.DisablePoseUpdates;
+import frc.robot.commands.Vision.EnablePoseUpdates;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.SensorMonitor;
+import frc.robot.subsystems.Vision;
+import frc.robot.testingdashboard.TDNumber;
+import frc.robot.testingdashboard.TDSendable;
+import frc.robot.testingdashboard.TestingDashboard;
+import frc.robot.utils.FieldUtils;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -19,17 +52,91 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // Handle to Operator Inputs
+  private OI m_oi;
+  private Vision m_Vision;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // The robot's subsystems are defined here.
+  private final Drive m_robotDrive;
+  private final Lights m_lights;
+  private final SensorMonitor m_SensorMonitor;
+  private final SendableChooser<Command> m_autoChooser;
+  private PowerDistribution m_pdBoard;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
+    // load configuration
+    RobotMap.init();
+
+    m_pdBoard = new PowerDistribution(1, ModuleType.kRev);
+    m_pdBoard.setSwitchableChannel(true);
+
+    m_oi = OI.getInstance();
+
+    // Instantiate parameterized commands to register them with the testing dashboard.
+    // The first instance of a Command registers itself. No need to store the resulting
+    // objects.
+    registerCommands();
+
+    // Robot subsystems initialized and configured here
+    m_robotDrive = Drive.getInstance();
+    m_robotDrive.setDefaultCommand(new SwerveDrive(m_oi.getDriveInputs()));
+
+    m_lights = Lights.getInstance();
+    m_lights.setDefaultCommand(new MoveLightsBlue());
+
+    m_Vision = Vision.getInstance();
+
+    m_SensorMonitor = SensorMonitor.getInstance();
+
+    // Build the auto commands and add them to the chooser
+    m_autoChooser = AutoBuilder.buildAutoChooser("closeAutoTop_startMid");
+    new TDSendable(Drive.getInstance(), "Auto Commands", "Chooser", m_autoChooser);
+    
+    // Configure the trigger/button bindings
     configureBindings();
+
+    // Create Testing Dashboard
+    TestingDashboard.getInstance().createTestingDashboard();
+    SmartDashboard.putData(m_autoChooser);
+  }
+
+  private void registerCommands() {
+    // Lights commands
+    new BlinkLights();
+    new DisableLights();
+    new EnableLights();
+    new MakeRainbow();
+    new MoveLightsBlue();
+    new MakeCool();
+    new MoveLightsGreen();
+    new MoveLightsMagenta();
+    new MoveLightsYellow();
+    new MoveLightsPurple();
+    new MoveLightsColor();
+    new MakeWarm();
+
+    // Sensor commands
+    new ToggleSensorsOnOff();
+    new ResetAllSensors();
+
+    // Vision
+    new EnablePoseUpdates();
+    new DisablePoseUpdates();
+
+    TDNumber testX = new TDNumber(Drive.getInstance(), "Test Inputs", "TargetPoseX");
+    TDNumber testY = new TDNumber(Drive.getInstance(), "Test Inputs", "TargetPoseY");
+    new TurnToTarget(()->{
+      return new Pose2d(testX.get(), testY.get(), new Rotation2d());
+    });
+
+    new TargetDrive(()->{
+      return FieldUtils.getInstance().getSpeakerPose().toPose2d();//return new Pose2d(testX.get(), testY.get(), new Rotation2d());//
+    }, m_oi.getDriveInputs());
+
+    new DriveToPose(()->{
+      return FieldUtils.getInstance().getSpeakerPose().toPose2d();//return new Pose2d(testX.get(), testY.get(), new Rotation2d());//
+    });
   }
 
   /**
@@ -42,13 +149,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    OI.getInstance().bindControls();
   }
 
   /**
@@ -57,7 +158,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return m_autoChooser.getSelected();
   }
 }

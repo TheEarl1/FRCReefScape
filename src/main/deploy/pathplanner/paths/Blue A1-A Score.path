@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.6902663934426232,
+        "y": 7.333606557377049
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.545970074057692,
+        "y": 5.426192912483195
+      },
+      "isLocked": false,
+      "linkedName": "Blue Coral A1"
+    },
+    {
+      "anchor": {
+        "x": 3.1108094262295083,
+        "y": 4.186834016393442
+      },
+      "prevControl": {
+        "x": 2.634233544530879,
+        "y": 5.216034983684399
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Blue Reef A"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "BlueE2Score",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Blue A1 Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -51.170175095029634
+  },
+  "useDefaultConstraints": true
+}

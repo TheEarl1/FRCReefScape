@@ -5,27 +5,46 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.Lights.MakeCool;
+import frc.robot.commands.Lights.MakeRainbow;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Vision;
+import frc.robot.testingdashboard.TDNumber;
 
 /**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private MakeRainbow m_makeRainbow;
+  private MakeCool m_makeCool;
 
-  private final RobotContainer m_robotContainer;
+  private Vision m_vision;
+  private RobotContainer m_robotContainer;
+
+  private boolean m_endProcessingDone = false;
+  private double m_teleopStartTime;
+  private double m_elapsedTeleopTime;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  public Robot() {
+  @Override
+  public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_vision = Vision.getInstance();
+
+    m_makeRainbow = new MakeRainbow();
+    m_makeCool = new MakeCool();
   }
 
   /**
@@ -46,7 +65,13 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    if (m_makeCool != null) {
+      m_makeCool.cancel();
+    }
+
+    m_makeRainbow.schedule();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -59,6 +84,15 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
+    }
+
+    if (m_makeRainbow != null) {
+      m_makeRainbow.cancel();
+    }
+    
+    m_makeCool.schedule();
+    if (RobotMap.V_ENABLED) {
+      m_vision.enablePoseUpdates();
     }
   }
 
@@ -75,11 +109,31 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    if (m_makeRainbow != null) {
+      m_makeRainbow.cancel();
+    }
+
+    if (m_makeCool != null) {
+      m_makeCool.cancel();
+    }
+
+    if (RobotMap.V_ENABLED) {
+      m_vision.enablePoseUpdates();
+    }
+
+    m_teleopStartTime = Timer.getFPGATimestamp();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_elapsedTeleopTime = Timer.getFPGATimestamp() - m_teleopStartTime;
+    if(!m_endProcessingDone &&
+       m_elapsedTeleopTime > Constants.END_MATCH_TIME_S) {
+        doEndMatchProcessing();
+    }
+  }
 
   @Override
   public void testInit() {
@@ -98,4 +152,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  private void doEndMatchProcessing() {
+    m_endProcessingDone = true;
+  }
 }
