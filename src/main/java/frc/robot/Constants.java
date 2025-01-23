@@ -128,8 +128,8 @@ public final class Constants {
     // Distance from robot center to furthest module
     public static final double kBaseRadius = Units.inchesToMeters(RobotMap.R_BASE_RADIUS_INCHES);
     public static final Translation2d kRightFrontModulePosition = new Translation2d(kWheelBase / 2, kTrackWidth / 2);
-    public static final Translation2d kLeftFrontModulePosition = new Translation2d(kWheelBase / 2, -kTrackWidth / 2);
-    public static final Translation2d kRightRearModulePosition = new Translation2d(-kWheelBase / 2, kTrackWidth / 2);
+    public static final Translation2d kLeftFrontModulePosition = new Translation2d(-kWheelBase / 2, kTrackWidth / 2);
+    public static final Translation2d kRightRearModulePosition = new Translation2d(kWheelBase / 2, -kTrackWidth / 2);
     public static final Translation2d kLeftRearModulePosition = new Translation2d(-kWheelBase / 2, -kTrackWidth / 2);
     public static final Translation2d[] kModulePositions = new Translation2d[] { kRightFrontModulePosition, kLeftFrontModulePosition, kRightRearModulePosition, kLeftRearModulePosition };
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
