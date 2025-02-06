@@ -5,11 +5,9 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -30,6 +28,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -43,7 +42,7 @@ import frc.robot.utils.SwerveUtils;
 
 public class Drive extends SubsystemBase {
   private static Drive m_drive;
-  private final Field2d m_field;
+  public final Field2d m_field;
 
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -162,15 +161,20 @@ public class Drive extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
 
-  m_DLeftFrontCurrentOutput = new TDNumber(this, "Current", "Drive Front Left Output", m_frontLeft.getDriveOutputCurrent());
-  m_DRightFrontCurrentOutput = new TDNumber(this, "Current", "Drive Front Right Output", m_frontRight.getDriveOutputCurrent());
-  m_DLeftBackCurrentOutput = new TDNumber(this, "Current", "Drive Back Left Output", m_rearLeft.getDriveOutputCurrent());
-  m_DRightBackCurrentOutput = new TDNumber(this, "Current", "Drive Back Right Output", m_rearRight.getDriveOutputCurrent());
+    m_DLeftFrontCurrentOutput = new TDNumber(this, "Current", "Drive Front Left Output", m_frontLeft.getDriveOutputCurrent());
+    m_DRightFrontCurrentOutput = new TDNumber(this, "Current", "Drive Front Right Output", m_frontRight.getDriveOutputCurrent());
+    m_DLeftBackCurrentOutput = new TDNumber(this, "Current", "Drive Back Left Output", m_rearLeft.getDriveOutputCurrent());
+    m_DRightBackCurrentOutput = new TDNumber(this, "Current", "Drive Back Right Output", m_rearRight.getDriveOutputCurrent());
 
-  m_TLeftFrontCurrentOutput = new TDNumber(this, "Current", "Turning Front Left Output", m_frontLeft.getTurningOutputCurrent());
-  m_TRightFrontCurrentOutput = new TDNumber(this, "Current", "Turning Front Right Output", m_frontRight.getTurningOutputCurrent());
-  m_TLeftBackCurrentOutput = new TDNumber(this, "Current", "Turning Back Left Output", m_rearLeft.getTurningOutputCurrent());
-  m_TRightBackCurrentOutput = new TDNumber(this, "Current", "Turning Back Right Output", m_rearRight.getTurningOutputCurrent());
+    m_TLeftFrontCurrentOutput = new TDNumber(this, "Current", "Turning Front Left Output", m_frontLeft.getTurningOutputCurrent());
+    m_TRightFrontCurrentOutput = new TDNumber(this, "Current", "Turning Front Right Output", m_frontRight.getTurningOutputCurrent());
+    m_TLeftBackCurrentOutput = new TDNumber(this, "Current", "Turning Back Left Output", m_rearLeft.getTurningOutputCurrent());
+    m_TRightBackCurrentOutput = new TDNumber(this, "Current", "Turning Back Right Output", m_rearRight.getTurningOutputCurrent());
+    
+    // Setup simulation swerve hardware
+    if (!RobotBase.isReal()) {
+
+    }
   }
 
   public static Drive getInstance() {
@@ -211,10 +215,13 @@ public class Drive extends SubsystemBase {
       Pose2d newPose = new Pose2d(lastPose.getTranslation().plus(translation),
                                   lastPose.getRotation().plus(rot));
       resetOdometry(newPose);
+      m_field.setRobotPose(newPose);
+      SmartDashboard.putData("Field", m_drive.m_field);
     }
 
     m_driveTime = now;
   }
+  
   /**
    * Returns the currently-estimated pose of the robot.
    *

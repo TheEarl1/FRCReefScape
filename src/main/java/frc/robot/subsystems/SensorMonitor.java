@@ -36,6 +36,15 @@ public class SensorMonitor extends SubsystemBase {
     c_SensorsDisabled
   }
 
+
+  public enum ApproachType {
+    c_LeftApproach,
+    c_RightApproach,
+    c_LeftSpin,
+    c_RightSpin,
+    c_Straight
+  }
+
   private TDString m_noteLocation;
   private TDBoolean m_sensorsEnabled;
 

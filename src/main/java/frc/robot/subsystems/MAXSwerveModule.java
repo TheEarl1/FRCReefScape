@@ -7,24 +7,27 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotBase;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
 
 import frc.robot.Constants;
 
 public class MAXSwerveModule {
   private final SparkMax m_drivingSparkMax;
   private final SparkMax m_turningSparkMax;
+  private final SparkMaxSim m_drivingSparkMaxSim;
+  private final SparkMaxSim m_turningSparkMaxSim;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -46,16 +49,23 @@ public class MAXSwerveModule {
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingSparkMax = new SparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new SparkMax(turningCANId, MotorType.kBrushless);
+    if (!RobotBase.isReal()) {
+      m_drivingSparkMaxSim = new SparkMaxSim(m_drivingSparkMax, DCMotor.getNEO(drivingCANId));
+      m_turningSparkMaxSim = new SparkMaxSim(m_turningSparkMax, DCMotor.getNeo550(turningCANId));
+    } else {
+      m_drivingSparkMaxSim = null;
+      m_turningSparkMaxSim = null;
+    }
 
     /* Configure the PID, FFF and other properties of the turning motors. Most of these come from 
      * Cnstants.
     */
     SparkMaxConfig m_turningConfig = new SparkMaxConfig();
-    m_turningConfig.inverted(Constants.kTurningEncoderInverted);
     m_turningConfig.idleMode(Constants.kTurningMotorIdleMode);
     m_turningConfig.smartCurrentLimit(Constants.kTurningMotorCurrentLimit);
     m_turningConfig.absoluteEncoder.positionConversionFactor(Constants.kTurningEncoderPositionFactor);
     m_turningConfig.absoluteEncoder.velocityConversionFactor(Constants.kTurningEncoderVelocityFactor);
+    m_turningConfig.absoluteEncoder.inverted(Constants.kTurningEncoderInverted);
     m_turningConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     m_turningConfig.closedLoop.p(Constants.kTurningP);
     m_turningConfig.closedLoop.i(Constants.kTurningI);

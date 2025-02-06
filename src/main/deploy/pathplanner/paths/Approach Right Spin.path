@@ -4,31 +4,36 @@
     {
       "anchor": {
         "x": 0.0,
-        "y": 1.0
+        "y": 0.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 0.25,
-        "y": 1.0
+        "y": 0.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.5,
-        "y": 1.152
+        "x": 2.0,
+        "y": 2.0
       },
       "prevControl": {
-        "x": 0.25,
-        "y": 1.152
+        "x": 1.1339745962155612,
+        "y": 1.5
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": 119.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,11 +46,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 29.999999999999996
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Approach",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Blue A1 Paths",
+    "Blue A2 Paths",
     "Blue Starts",
-    "Blue A2 Paths"
+    "Approach"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

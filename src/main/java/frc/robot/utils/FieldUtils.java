@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 
@@ -112,4 +113,21 @@ public class FieldUtils{
             return Constants.kSpeakerScoreBluePose;
         }
     }
+
+    public Pose2d getBlueReefAPose() {
+        return Constants.kBlueReefAPose;
+    }
+
+    public Pose2d getBlueReefBPose() {
+        return Constants.kBlueReefBPose;
+    }
+    
+    public Pose2d getBlueCoralA1Pose() {
+        return Constants.kBlueCoralA1Pose;
+    }
+
+    public Pose2d getBlueCoralA2Pose() {
+        return Constants.kBlueCoralA2Pose;
+    }
+    
 }

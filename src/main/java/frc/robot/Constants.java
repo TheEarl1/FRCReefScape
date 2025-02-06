@@ -243,16 +243,16 @@ public final class Constants {
 
     // TODO: accurately test & remeasure these constants
     public static final VisionConfig[] kVisionSystems = {
-        new VisionConfig("Arducam_OV9281_USB_Camera",
-                         new Transform3d(new Translation3d(Units.inchesToMeters(11.5), Units.inchesToMeters(0.5), Units.inchesToMeters(20.5)), 
-                                new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(180))),
-                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                         PoseStrategy.LOWEST_AMBIGUITY),
-        new VisionConfig("Forward_Facing_Arducam_OV9281",
-                         new Transform3d(new Translation3d(Units.inchesToMeters(15.5), Units.inchesToMeters(0.5), Units.inchesToMeters(21.5)), 
-                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))),
-                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
-                         PoseStrategy.LOWEST_AMBIGUITY)
+//        new VisionConfig("Arducam_OV9281_USB_Camera",
+//                         new Transform3d(new Translation3d(Units.inchesToMeters(11.5), Units.inchesToMeters(0.5), Units.inchesToMeters(20.5)), 
+//                                new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(180))),
+//                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+//                         PoseStrategy.LOWEST_AMBIGUITY),
+//        new VisionConfig("Forward_Facing_Arducam_OV9281",
+//                         new Transform3d(new Translation3d(Units.inchesToMeters(15.5), Units.inchesToMeters(0.5), Units.inchesToMeters(21.5)), 
+//                new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(0))),
+//                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
+//                         PoseStrategy.LOWEST_AMBIGUITY)
     };
 
     //Maximum ambiguity accepted as a valid result from the vision systems
@@ -277,6 +277,11 @@ public final class Constants {
     public static final Pose2d kSource3BluePose = new Pose2d(14.87, 0.89, new Rotation2d(Units.degreesToRadians(-60)));
     public static final Pose2d kAmpScoreBluePose = new Pose2d(1.82, 7.56, new Rotation2d(-Math.PI / 2));
     public static final Pose2d kSpeakerScoreBluePose = new Pose2d();
+
+    public static final Pose2d kBlueReefAPose = new Pose2d(3.111, 4.187, new Rotation2d(Units.degreesToRadians(0)));
+    public static final Pose2d kBlueReefBPose = new Pose2d(3.129, 3.809, new Rotation2d(Units.degreesToRadians(0)));
+    public static final Pose2d kBlueCoralA1Pose = new Pose2d(1.690, 7.334, new Rotation2d(Units.degreesToRadians(-50)));
+    public static final Pose2d kBlueCoralA2Pose = new Pose2d(0.773, 6.668, new Rotation2d(Units.degreesToRadians(-50)));
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // TODO: (Fake values. Experiment and determine estimation noise on an actual robot.)

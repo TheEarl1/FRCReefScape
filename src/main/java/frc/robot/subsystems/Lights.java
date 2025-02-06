@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+import frc.robot.OI;
 import frc.robot.RobotMap;
 import frc.robot.testingdashboard.SubsystemBase;
 
@@ -21,6 +24,10 @@ public class Lights extends SubsystemBase {
   private int m_rainbowFirstPixelHue;
   private int m_firstPixelValue;
   private Timer m_timer;
+  private ArrayList<Integer> oiIndicatorLEDs = new ArrayList<Integer>(){{
+    add((Constants.LED_LENGTH / 4));
+    add((3 * Constants.LED_LENGTH / 4));
+  }};
 
   /** Creates a new Lights. */
   private Lights() {
@@ -82,6 +89,7 @@ public class Lights extends SubsystemBase {
     m_rainbowFirstPixelHue += 3;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
+    updateOIIndicators();
   }
 
   public void makeCool() {
@@ -91,12 +99,13 @@ public class Lights extends SubsystemBase {
       // shape is a circle so only one value needs to precess
       final var hue = 60 + (m_rainbowFirstPixelHue + (i * 130 / m_LEDBuffer.getLength())) % 85;
       // Set the value
-      m_LEDBuffer.setHSV(i, hue, 255, 128);
+        m_LEDBuffer.setHSV(i, hue, 255, 128);
     }
     // Increase by to make the rainbow "move"
     m_rainbowFirstPixelHue += 2;
     // Check bounds
     m_rainbowFirstPixelHue %= 90;
+    updateOIIndicators();
   }
 
     public void makeWarm() {
@@ -112,6 +121,7 @@ public class Lights extends SubsystemBase {
     m_rainbowFirstPixelHue += 2;
     // Check bounds
     m_rainbowFirstPixelHue %= 60;
+    updateOIIndicators();
   }
 
   public void moveLights(int hue) {
@@ -123,6 +133,7 @@ public class Lights extends SubsystemBase {
     // what "moves" the program
     m_firstPixelValue += 10;
     m_firstPixelValue %= 255;
+    updateOIIndicators();
   }
 
   public void blinkLights(int hue) {
@@ -131,10 +142,33 @@ public class Lights extends SubsystemBase {
     }
 
     m_firstPixelValue = (int)(Math.sin(m_timer.get() * 5) * 128 + 128);
+    updateOIIndicators();
   }
 
   @Override
   public void periodic() {
     super.periodic();
+  }
+
+  public void updateOIIndicators(){
+    for (int i : oiIndicatorLEDs) {
+      switch (OI.getInstance().getApproachType()) {
+        case c_LeftApproach:
+          m_LEDBuffer.setHSV(i, 0, 255, 255); // red
+          break;
+        case c_RightApproach:
+          m_LEDBuffer.setHSV(i, 60, 255, 255); // green
+          break;
+        case c_LeftSpin:
+          m_LEDBuffer.setHSV(i, 30, 255, 255); // yellow
+          break;
+        case c_RightSpin:
+          m_LEDBuffer.setHSV(i, 160, 255, 255); // magenta
+          break;
+        case c_Straight:
+        default:
+          break;
+      }
+    }
   }
 }
