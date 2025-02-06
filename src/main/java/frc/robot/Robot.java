@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Vision;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -17,6 +18,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+  private Vision m_vision;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -26,6 +28,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_vision = Vision.getInstance();
   }
 
   /**
@@ -60,6 +63,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    
+    if (RobotMap.V_ENABLED) {
+      m_vision.enablePoseUpdates();
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -74,6 +81,10 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+
+    if (RobotMap.V_ENABLED) {
+      m_vision.enablePoseUpdates();
     }
   }
 

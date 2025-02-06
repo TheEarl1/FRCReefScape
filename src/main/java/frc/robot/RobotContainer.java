@@ -4,13 +4,24 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.drive.SwerveDrive;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.WoS;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Funnel;
+import frc.robot.testingdashboard.TDSendable;
+import frc.robot.testingdashboard.TestingDashboard;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,17 +30,58 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // Handle to Operator Inputs
+  private OI m_oi;
+  private Vision m_Vision;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // The robot's subsystems are defined here.
+  private final Drive m_robotDrive;
+  // private final SendableChooser<Command> m_autoChooser;
+  private PowerDistribution m_pdBoard;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
+    // load configuration
+    RobotMap.init();
+
+    m_pdBoard = new PowerDistribution(1, ModuleType.kRev);
+    m_pdBoard.setSwitchableChannel(true);
+
+    m_oi = OI.getInstance();
+    
+    m_Vision = Vision.getInstance();
+
+    // Instantiate parameterized commands to register them with the testing dashboard.
+    // The first instance of a Command registers itself. No need to store the resulting
+    // objects.
+    WoS.getInstance();
+    registerCommands();
+
+    Elevator.getInstance();
+    registerCommands();
+
+    Funnel.getInstance();
+    registerCommands();
+    // Robot subsystems initialized and configured here
+    m_robotDrive = Drive.getInstance();
+    m_robotDrive.setDefaultCommand(new SwerveDrive(m_oi.getDriveInputs()));
+
+    // Build the auto commands and add them to the chooser
+    // m_autoChooser = AutoBuilder.buildAutoChooser("closeAutoTop_startMid");
+    // new TDSendable(Drive.getInstance(), "Auto Commands", "Chooser", m_autoChooser);
+    
+    // Configure the trigger/button bindings
     configureBindings();
+
+    // Create Testing Dashboard
+    TestingDashboard.getInstance().createTestingDashboard();
+    // SmartDashboard.putData(m_autoChooser);
+  }
+
+  private void registerCommands() {
+
+    //TDNumber testX = new TDNumber(Drive.getInstance(), "Test Inputs", "TargetPoseX");
+    //TDNumber testY = new TDNumber(Drive.getInstance(), "Test Inputs", "TargetPoseY");
   }
 
   /**
@@ -42,13 +94,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    OI.getInstance().bindControls();
   }
 
   /**
@@ -57,7 +103,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return null; //m_autoChooser.getSelected();
   }
 }
