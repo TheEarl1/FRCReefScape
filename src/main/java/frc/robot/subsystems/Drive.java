@@ -34,7 +34,7 @@ import frc.robot.utils.FieldUtils;
 
 public class Drive extends SubsystemBase {
   private static Drive m_Drive;
-  private final Field2d m_field;
+  public final Field2d m_field;
 
   private final MAXSwerveModule m_FrontLeft = new MAXSwerveModule(
     RobotMap.D_FRONT_LEFT_DRIVE, 
